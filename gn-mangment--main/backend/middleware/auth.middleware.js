@@ -14,21 +14,20 @@ export const authMiddleware = (req, res, next) => {
 
     if (!token) {
       return res.status(401).json({
-        message:
-          "No token provided. Send token in Authorization header as: Bearer YOUR_TOKEN",
+        message: "لم يتم تقديم رمز تفويض. يرجى تسجيل الدخول.",
       });
     }
 
     const decoded = verifyAccessToken(token);
 
     if (!decoded) {
-      return res.status(401).json({ message: "Invalid or expired token" });
+      return res.status(401).json({ message: "رمز غير صالح أو منتهي الصلاحية" });
     }
 
     req.user = decoded;
     next();
   } catch (error) {
     console.error("Auth middleware error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "خطأ داخلي في الخادم" });
   }
 };

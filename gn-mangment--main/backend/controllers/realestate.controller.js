@@ -19,9 +19,9 @@ export const createRealEstate = async (req, res) => {
       },
     });
 
-    return res.status(201).json({ message: "Real estate record created", data: realEstate });
+    return res.status(201).json({ message: "تم إنشاء سجل العقارات", data: realEstate });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to create real estate record", error: error.message });
+    return res.status(500).json({ message: "فشل في إنشاء سجل العقارات", error: error.message });
   }
 };
 
@@ -32,6 +32,6 @@ export const getAllRealEstate = async (req, res) => {
     });
     return res.status(200).json({ data: records });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to retrieve real estate records" });
+    return res.status(500).json({ message: "فشل في استرداد سجلات العقارات" });
   }
 };

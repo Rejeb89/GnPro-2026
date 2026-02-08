@@ -15,7 +15,7 @@ export const register = async (req, res) => {
 
     // Validate input
     if (!email || !password || !name) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({ message: "جميع الحقول مطلوبة" });
     }
 
     // Check if user exists
@@ -24,7 +24,7 @@ export const register = async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(409).json({ message: "User already exists" });
+      return res.status(409).json({ message: "المستخدم موجود بالفعل" });
     }
 
     // Hash password
@@ -65,14 +65,13 @@ export const register = async (req, res) => {
     });
 
     return res.status(201).json({
-      message: "User registered successfully",
+      message: "تم تسجيل المستخدم بنجاح",
       user,
       accessToken,
-      hint: "Send this token in Authorization header as: Bearer YOUR_TOKEN",
     });
   } catch (error) {
     console.error("Register error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "خطأ داخلي في الخادم" });
   }
 };
 
@@ -83,7 +82,7 @@ export const login = async (req, res) => {
 
     // Validate input
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password required" });
+      return res.status(400).json({ message: "البريد الإلكتروني وكلمة المرور مطلوبان" });
     }
 
     // Find user
@@ -92,14 +91,14 @@ export const login = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "بيانات الاعتماد غير صالحة" });
     }
 
     // Check password
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "بيانات الاعتماد غير صالحة" });
     }
 
     // Generate tokens
@@ -122,7 +121,7 @@ export const login = async (req, res) => {
     console.log("✅ User logged in:", { id: user.id, email: user.email });
 
     return res.status(200).json({
-      message: "Login successful",
+      message: "تم تسجيل الدخول بنجاح",
       user: {
         id: user.id,
         email: user.email,
@@ -130,11 +129,10 @@ export const login = async (req, res) => {
         role: user.role,
       },
       accessToken,
-      hint: "Send this token in Authorization header as: Bearer YOUR_TOKEN",
     });
   } catch (error) {
     console.error("Login error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "خطأ داخلي في الخادم" });
   }
 };
 
@@ -142,10 +140,10 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     res.clearCookie("refreshToken");
-    return res.status(200).json({ message: "Logged out successfully" });
+    return res.status(200).json({ message: "تم تسجيل الخروج بنجاح" });
   } catch (error) {
     console.error("Logout error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "خطأ داخلي في الخادم" });
   }
 };
 

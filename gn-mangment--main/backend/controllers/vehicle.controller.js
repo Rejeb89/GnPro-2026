@@ -20,9 +20,9 @@ export const createVehicle = async (req, res) => {
       },
     });
 
-    return res.status(201).json({ message: "Vehicle created", data: vehicle });
+    return res.status(201).json({ message: "تم إنشاء الوسيلة", data: vehicle });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to create vehicle", error: error.message });
+    return res.status(500).json({ message: "فشل في إنشاء الوسيلة", error: error.message });
   }
 };
 
@@ -36,7 +36,7 @@ export const getAllVehicles = async (req, res) => {
     });
     return res.status(200).json({ data: vehicles });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to retrieve vehicles" });
+    return res.status(500).json({ message: "فشل في استرداد الوسائل" });
   }
 };
 
@@ -57,8 +57,8 @@ export const createMaintenanceRecord = async (req, res) => {
       },
     });
 
-    return res.status(201).json({ message: "Maintenance record created", data: record });
+    return res.status(201).json({ message: "تم إنشاء سجل الصيانة", data: record });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to create maintenance record", error: error.message });
+    return res.status(500).json({ message: "فشل في إنشاء سجل الصيانة", error: error.message });
   }
 };

@@ -37,20 +37,7 @@ export const createEquipmentDelivery = async (req, res) => {
       !unitHead
     ) {
       return res.status(400).json({
-        message: "All required fields must be provided",
-        required: [
-          "equipmentName",
-          "category",
-          "quantity",
-          "beneficiaryUnit",
-          "beneficiary",
-          "receiver",
-          "deliveryDate",
-          "referenceNumber",
-          "referenceDate",
-          "warehouseManager",
-          "unitHead",
-        ],
+        message: "يجب تقديم جميع الحقول المطلوبة",
       });
     }
 
@@ -64,8 +51,7 @@ export const createEquipmentDelivery = async (req, res) => {
 
     if (!managerUser) {
       return res.status(400).json({
-        message: "Warehouse manager must be a user with MANAGER role",
-        hint: "Make sure the warehouse manager name matches a Manager user in the system",
+        message: "يجب أن يكون مدير المستودع مستخدماً بدور مدير (MANAGER)",
       });
     }
 
@@ -86,7 +72,7 @@ export const createEquipmentDelivery = async (req, res) => {
 
     if (currentStock < parseInt(quantity)) {
       return res.status(400).json({
-        message: `Insufficient stock for ${equipmentName}`,
+        message: `المخزون غير كافٍ لـ ${equipmentName}`,
         requested: parseInt(quantity),
         available: currentStock,
       });
@@ -118,13 +104,13 @@ export const createEquipmentDelivery = async (req, res) => {
     });
 
     return res.status(201).json({
-      message: "Equipment delivery recorded successfully",
+      message: "تم تسجيل تسليم التجهيزات بنجاح",
       data: delivery,
     });
   } catch (error) {
     console.error("Create delivery error:", error);
     return res.status(500).json({
-      message: "Failed to create equipment delivery",
+      message: "فشل في تسجيل تسليم التجهيزات",
       error: error.message,
     });
   }
@@ -145,14 +131,14 @@ export const getAllEquipmentDeliveries = async (req, res) => {
     console.log(`✅ Retrieved ${deliveries.length} delivery records`);
 
     return res.status(200).json({
-      message: "Equipment deliveries retrieved successfully",
+      message: "تم استرداد عمليات تسليم التجهيزات بنجاح",
       data: deliveries,
       count: deliveries.length,
     });
   } catch (error) {
     console.error("Get deliveries error:", error);
     return res.status(500).json({
-      message: "Failed to retrieve equipment deliveries",
+      message: "فشل في استرداد عمليات تسليم التجهيزات",
     });
   }
 };
@@ -172,7 +158,7 @@ export const getEquipmentDeliveryById = async (req, res) => {
     });
 
     if (!delivery) {
-      return res.status(404).json({ message: "Equipment delivery not found" });
+      return res.status(404).json({ message: "لم يتم العثور على تسليم التجهيزات" });
     }
 
     console.log(`✅ Retrieved delivery:`, {
@@ -181,13 +167,13 @@ export const getEquipmentDeliveryById = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Equipment delivery retrieved successfully",
+      message: "تم استرداد تسليم التجهيزات بنجاح",
       data: delivery,
     });
   } catch (error) {
     console.error("Get delivery error:", error);
     return res.status(500).json({
-      message: "Failed to retrieve equipment delivery",
+      message: "فشل في استرداد تسليم التجهيزات",
     });
   }
 };
@@ -216,7 +202,7 @@ export const updateEquipmentDelivery = async (req, res) => {
     });
 
     if (!delivery) {
-      return res.status(404).json({ message: "Equipment delivery not found" });
+      return res.status(404).json({ message: "لم يتم العثور على تسليم التجهيزات" });
     }
 
     // إذا تم تحديث warehouseManager، تحقق من أنه Manager
@@ -230,7 +216,7 @@ export const updateEquipmentDelivery = async (req, res) => {
 
       if (!managerUser) {
         return res.status(400).json({
-          message: "Warehouse manager must be a user with MANAGER role",
+          message: "يجب أن يكون مدير المستودع مستخدماً بدور مدير (MANAGER)",
         });
       }
     }
@@ -263,13 +249,13 @@ export const updateEquipmentDelivery = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Equipment delivery updated successfully",
+      message: "تم تحديث تسليم التجهيزات بنجاح",
       data: updatedDelivery,
     });
   } catch (error) {
     console.error("Update delivery error:", error);
     return res.status(500).json({
-      message: "Failed to update equipment delivery",
+      message: "فشل في تحديث تسليم التجهيزات",
     });
   }
 };
@@ -284,7 +270,7 @@ export const deleteEquipmentDelivery = async (req, res) => {
     });
 
     if (!delivery) {
-      return res.status(404).json({ message: "Equipment delivery not found" });
+      return res.status(404).json({ message: "لم يتم العثور على تسليم التجهيزات" });
     }
 
     await prisma.equipmentDelivery.delete({
@@ -297,13 +283,13 @@ export const deleteEquipmentDelivery = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Equipment delivery deleted successfully",
+      message: "تم حذف تسليم التجهيزات بنجاح",
       data: { id: delivery.id },
     });
   } catch (error) {
     console.error("Delete delivery error:", error);
     return res.status(500).json({
-      message: "Failed to delete equipment delivery",
+      message: "فشل في حذف تسليم التجهيزات",
     });
   }
 };
@@ -319,14 +305,14 @@ export const getDeliveriesByUnit = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Deliveries retrieved by unit",
+      message: "تم استرداد عمليات التسليم حسب الوحدة",
       data: deliveries,
       count: deliveries.length,
     });
   } catch (error) {
     console.error("Get deliveries by unit error:", error);
     return res.status(500).json({
-      message: "Failed to retrieve deliveries by unit",
+      message: "فشل في استرداد عمليات التسليم حسب الوحدة",
     });
   }
 };
@@ -338,7 +324,7 @@ export const getDeliveriesByDateRange = async (req, res) => {
 
     if (!startDate || !endDate) {
       return res.status(400).json({
-        message: "Start date and end date are required",
+        message: "تاريخ البدء وتاريخ الانتهاء مطلوبان",
       });
     }
 
@@ -353,14 +339,14 @@ export const getDeliveriesByDateRange = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Deliveries retrieved by date range",
+      message: "تم استرداد عمليات التسليم حسب النطاق الزمني",
       data: deliveries,
       count: deliveries.length,
     });
   } catch (error) {
     console.error("Get deliveries by date error:", error);
     return res.status(500).json({
-      message: "Failed to retrieve deliveries by date range",
+      message: "فشل في استرداد عمليات التسليم حسب النطاق الزمني",
     });
   }
 };

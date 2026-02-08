@@ -7,6 +7,9 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Equipment from './pages/Equipment';
 import Credits from './pages/Credits';
+import RealEstate from './pages/RealEstate';
+import Vehicles from './pages/Vehicles';
+import Fuel from './pages/Fuel';
 import Settings from './pages/Settings';
 import ComingSoon from './components/ComingSoon';
 
@@ -44,7 +47,7 @@ function App() {
           <Route path="/real-estate" element={
             <ProtectedRoute>
               <Layout>
-                <ComingSoon title="الوضعية العقارية" />
+                <RealEstate />
               </Layout>
             </ProtectedRoute>
           } />
@@ -52,7 +55,7 @@ function App() {
           <Route path="/vehicles" element={
             <ProtectedRoute>
               <Layout>
-                <ComingSoon title="الوسائل والصيانة" />
+                <Vehicles />
               </Layout>
             </ProtectedRoute>
           } />
@@ -60,7 +63,7 @@ function App() {
           <Route path="/fuel" element={
             <ProtectedRoute>
               <Layout>
-                <ComingSoon title="قسم المحروقات" />
+                <Fuel />
               </Layout>
             </ProtectedRoute>
           } />

@@ -18,9 +18,9 @@ export const createFuelRecord = async (req, res) => {
       },
     });
 
-    return res.status(201).json({ message: "Fuel record created", data: record });
+    return res.status(201).json({ message: "تم إنشاء سجل المحروقات", data: record });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to create fuel record", error: error.message });
+    return res.status(500).json({ message: "فشل في إنشاء سجل المحروقات", error: error.message });
   }
 };
 
@@ -32,6 +32,6 @@ export const getAllFuelRecords = async (req, res) => {
     });
     return res.status(200).json({ data: records });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to retrieve fuel records" });
+    return res.status(500).json({ message: "فشل في استرداد سجلات المحروقات" });
   }
 };

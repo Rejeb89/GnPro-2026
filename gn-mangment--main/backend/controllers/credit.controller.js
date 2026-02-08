@@ -17,9 +17,9 @@ export const createCredit = async (req, res) => {
       },
     });
 
-    return res.status(201).json({ message: "Credit created successfully", data: credit });
+    return res.status(201).json({ message: "تم إنشاء الاعتماد بنجاح", data: credit });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to create credit", error: error.message });
+    return res.status(500).json({ message: "فشل في إنشاء الاعتماد", error: error.message });
   }
 };
 
@@ -31,7 +31,7 @@ export const getAllCredits = async (req, res) => {
     });
     return res.status(200).json({ data: credits });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to retrieve credits" });
+    return res.status(500).json({ message: "فشل في استرداد الاعتمادات" });
   }
 };
 
@@ -41,12 +41,12 @@ export const updateCreditSpending = async (req, res) => {
     const { spentAmount } = req.body;
 
     const credit = await prisma.financialCredit.findUnique({ where: { id: parseInt(id) } });
-    if (!credit) return res.status(404).json({ message: "Credit not found" });
+    if (!credit) return res.status(404).json({ message: "الاعتماد غير موجود" });
 
     const newSpent = credit.spentAmount + parseFloat(spentAmount);
     const newRemaining = credit.totalAmount - newSpent;
 
-    if (newRemaining < 0) return res.status(400).json({ message: "Insufficient credit remaining" });
+    if (newRemaining < 0) return res.status(400).json({ message: "الرصيد المتبقي غير كافٍ" });
 
     const updatedCredit = await prisma.financialCredit.update({
       where: { id: parseInt(id) },
@@ -56,8 +56,8 @@ export const updateCreditSpending = async (req, res) => {
       }
     });
 
-    return res.status(200).json({ message: "Credit updated successfully", data: updatedCredit });
+    return res.status(200).json({ message: "تم تحديث الاعتماد بنجاح", data: updatedCredit });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to update credit" });
+    return res.status(500).json({ message: "فشل في تحديث الاعتماد" });
   }
 };

@@ -10,7 +10,7 @@ export const getSettings = async (req, res) => {
     }
     return res.status(200).json({ data: settings });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to retrieve settings" });
+    return res.status(500).json({ message: "فشل في استرداد الإعدادات" });
   }
 };
 
@@ -28,8 +28,8 @@ export const updateSettings = async (req, res) => {
       settings = await prisma.systemSettings.create({ data: { regionName } });
     }
 
-    return res.status(200).json({ message: "Settings updated successfully", data: settings });
+    return res.status(200).json({ message: "تم تحديث الإعدادات بنجاح", data: settings });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to update settings" });
+    return res.status(500).json({ message: "فشل في تحديث الإعدادات" });
   }
 };

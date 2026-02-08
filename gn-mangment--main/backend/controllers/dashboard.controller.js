@@ -46,7 +46,7 @@ export const getDashboardStats = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Dashboard statistics retrieved successfully",
+      message: "تم استرداد إحصائيات لوحة التحكم بنجاح",
       data: {
         counts: {
           users: totalUsers,
@@ -64,6 +64,6 @@ export const getDashboardStats = async (req, res) => {
     });
   } catch (error) {
     console.error("Dashboard stats error:", error);
-    return res.status(500).json({ message: "Failed to retrieve dashboard statistics" });
+    return res.status(500).json({ message: "فشل في استرداد إحصائيات لوحة التحكم" });
   }
 };

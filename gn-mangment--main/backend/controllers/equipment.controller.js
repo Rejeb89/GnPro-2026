@@ -32,7 +32,7 @@ export const createEquipmentReception = async (req, res) => {
     ) {
       return res
         .status(400)
-        .json({ message: "All required fields must be provided" });
+        .json({ message: "يجب تقديم جميع الحقول المطلوبة" });
     }
 
     const equipment = await prisma.equipmentReception.create({
@@ -58,14 +58,14 @@ export const createEquipmentReception = async (req, res) => {
     });
 
     return res.status(201).json({
-      message: "Equipment reception recorded successfully",
+      message: "تم تسجيل استلام التجهيزات بنجاح",
       data: equipment,
     });
   } catch (error) {
     console.error("Create equipment error:", error);
     return res
       .status(500)
-      .json({ message: "Failed to create equipment reception" });
+      .json({ message: "فشل في تسجيل استلام التجهيزات" });
   }
 };
 
@@ -84,7 +84,7 @@ export const getAllEquipmentReceptions = async (req, res) => {
     console.log(`✅ Retrieved ${equipments.length} equipment records`);
 
     return res.status(200).json({
-      message: "Equipment receptions retrieved successfully",
+      message: "تم استرداد عمليات استلام التجهيزات بنجاح",
       data: equipments,
       count: equipments.length,
     });
@@ -92,7 +92,7 @@ export const getAllEquipmentReceptions = async (req, res) => {
     console.error("Get equipments error:", error);
     return res
       .status(500)
-      .json({ message: "Failed to retrieve equipment receptions" });
+      .json({ message: "فشل في استرداد عمليات استلام التجهيزات" });
   }
 };
 
@@ -111,7 +111,7 @@ export const getEquipmentReceptionById = async (req, res) => {
     });
 
     if (!equipment) {
-      return res.status(404).json({ message: "Equipment reception not found" });
+      return res.status(404).json({ message: "لم يتم العثور على استلام التجهيزات" });
     }
 
     console.log(`✅ Retrieved equipment:`, {
@@ -120,14 +120,14 @@ export const getEquipmentReceptionById = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Equipment reception retrieved successfully",
+      message: "تم استرداد استلام التجهيزات بنجاح",
       data: equipment,
     });
   } catch (error) {
     console.error("Get equipment error:", error);
     return res
       .status(500)
-      .json({ message: "Failed to retrieve equipment reception" });
+      .json({ message: "فشل في استرداد استلام التجهيزات" });
   }
 };
 
@@ -153,7 +153,7 @@ export const updateEquipmentReception = async (req, res) => {
     });
 
     if (!equipment) {
-      return res.status(404).json({ message: "Equipment reception not found" });
+      return res.status(404).json({ message: "لم يتم العثور على استلام التجهيزات" });
     }
 
     const updatedEquipment = await prisma.equipmentReception.update({
@@ -184,14 +184,14 @@ export const updateEquipmentReception = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Equipment reception updated successfully",
+      message: "تم تحديث استلام التجهيزات بنجاح",
       data: updatedEquipment,
     });
   } catch (error) {
     console.error("Update equipment error:", error);
     return res
       .status(500)
-      .json({ message: "Failed to update equipment reception" });
+      .json({ message: "فشل في تحديث استلام التجهيزات" });
   }
 };
 
@@ -205,7 +205,7 @@ export const deleteEquipmentReception = async (req, res) => {
     });
 
     if (!equipment) {
-      return res.status(404).json({ message: "Equipment reception not found" });
+      return res.status(404).json({ message: "لم يتم العثور على استلام التجهيزات" });
     }
 
     await prisma.equipmentReception.delete({
@@ -215,14 +215,14 @@ export const deleteEquipmentReception = async (req, res) => {
     console.log(`✅ Equipment deleted:`, { id, name: equipment.equipmentName });
 
     return res.status(200).json({
-      message: "Equipment reception deleted successfully",
+      message: "تم حذف استلام التجهيزات بنجاح",
       data: { id: equipment.id },
     });
   } catch (error) {
     console.error("Delete equipment error:", error);
     return res
       .status(500)
-      .json({ message: "Failed to delete equipment reception" });
+      .json({ message: "فشل في حذف استلام التجهيزات" });
   }
 };
 
@@ -237,7 +237,7 @@ export const getEquipmentByCategory = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Equipment receptions retrieved by category",
+      message: "تم استرداد التجهيزات حسب الفئة",
       data: equipments,
       count: equipments.length,
     });
@@ -245,7 +245,7 @@ export const getEquipmentByCategory = async (req, res) => {
     console.error("Get equipment by category error:", error);
     return res
       .status(500)
-      .json({ message: "Failed to retrieve equipment by category" });
+      .json({ message: "فشل في استرداد التجهيزات حسب الفئة" });
   }
 };
 
@@ -263,7 +263,7 @@ export const getLowStockEquipment = async (req, res) => {
     );
 
     return res.status(200).json({
-      message: "Low stock equipment retrieved",
+      message: "تم استرداد التجهيزات ذات المخزون المنخفض",
       data: lowStockEquipments,
       count: lowStockEquipments.length,
     });
@@ -271,7 +271,7 @@ export const getLowStockEquipment = async (req, res) => {
     console.error("Get low stock error:", error);
     return res
       .status(500)
-      .json({ message: "Failed to retrieve low stock equipment" });
+      .json({ message: "فشل في استرداد التجهيزات ذات المخزون المنخفض" });
   }
 };
 
@@ -323,7 +323,7 @@ export const getEquipmentStockSummary = async (req, res) => {
     const summary = Object.values(stockMap);
 
     return res.status(200).json({
-      message: "Equipment stock summary retrieved successfully",
+      message: "تم استرداد ملخص مخزون التجهيزات بنجاح",
       data: summary,
       count: summary.length,
     });
@@ -331,6 +331,6 @@ export const getEquipmentStockSummary = async (req, res) => {
     console.error("Get stock summary error:", error);
     return res
       .status(500)
-      .json({ message: "Failed to retrieve equipment stock summary" });
+      .json({ message: "فشل في استرداد ملخص مخزون التجهيزات" });
   }
 };
