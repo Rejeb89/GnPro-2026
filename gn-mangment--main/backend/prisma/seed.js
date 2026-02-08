@@ -20,6 +20,19 @@ async function main() {
     },
   });
 
+  // Create Requested Admin User
+  const requestedAdminPassword = await bcrypt.hash("rejebmohamed1989", 10);
+  await prisma.user.upsert({
+    where: { email: "rejebmohamed@gn.com" },
+    update: {},
+    create: {
+      email: "rejebmohamed@gn.com",
+      password: requestedAdminPassword,
+      name: "محمد رجب",
+      role: "ADMIN",
+    },
+  });
+
   // Create Manager User
   const managerPassword = await bcrypt.hash("manager123", 10);
   const manager = await prisma.user.upsert({
