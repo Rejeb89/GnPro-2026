@@ -20,6 +20,24 @@ async function main() {
     },
   });
 
+  // Create Mohamed Rejeb Admin User
+  const rejebPasswordRaw = process.env.REJEB_ADMIN_PASSWORD || "rejebmohamed1989";
+  const rejebPassword = await bcrypt.hash(rejebPasswordRaw, 10);
+  await prisma.user.upsert({
+    where: { email: "rejebmohamed@gn.com" },
+    update: {
+      password: rejebPassword,
+      name: "محمد رجب",
+      role: "ADMIN",
+    },
+    create: {
+      email: "rejebmohamed@gn.com",
+      password: rejebPassword,
+      name: "محمد رجب",
+      role: "ADMIN",
+    },
+  });
+
   // Create Manager User
   const managerPassword = await bcrypt.hash("manager123", 10);
   const manager = await prisma.user.upsert({
