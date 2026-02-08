@@ -38,7 +38,9 @@ const Login = () => {
       await login('rejebmohamed@gn.com', 'rejebmohamed1989');
       navigate('/');
     } catch (err) {
-      setError('فشل الدخول السريع. يرجى التأكد من تهيئة قاعدة البيانات.');
+      console.error('Quick access error:', err);
+      const errorMessage = err.response?.data?.message || 'فشل الدخول السريع. يرجى التأكد من تشغيل الخادم وتهيئة قاعدة البيانات.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

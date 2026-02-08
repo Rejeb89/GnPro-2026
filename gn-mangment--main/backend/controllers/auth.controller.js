@@ -91,6 +91,13 @@ export const login = async (req, res) => {
     });
 
     if (!user) {
+      // Check if any users exist in the database
+      const userCount = await prisma.user.count();
+      if (userCount === 0) {
+        return res.status(401).json({
+          message: "قاعدة البيانات غير مهيأة. يرجى تشغيل عملية التهيئة (seed)."
+        });
+      }
       return res.status(401).json({ message: "بيانات الاعتماد غير صالحة" });
     }
 

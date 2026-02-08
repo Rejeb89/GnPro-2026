@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
+import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
@@ -12,6 +13,7 @@ import vehicleRoutes from "./routes/vehicle.routes.js";
 import fuelRoutes from "./routes/fuel.routes.js";
 import settingsRoutes from "./routes/settings.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import { ensureDefaultAdmin } from "./services/init.service.js";
 
 dotenv.config();
 
@@ -28,9 +30,25 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to GN Management API" });
 });
 
+const prisma = new PrismaClient();
+
 // Health check endpoint
-app.get("/health", (req, res) => {
-  res.json({ status: "Server is running" });
+app.get("/health", async (req, res) => {
+  try {
+    // Check database connection
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({
+      status: "Server is running",
+      database: "connected",
+      environment: process.env.NODE_ENV
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "Server is running",
+      database: "disconnected",
+      error: error.message
+    });
+  }
 });
 
 // API Routes
@@ -56,11 +74,22 @@ app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
+// Auto-initialize admin user on startup
+ensureDefaultAdmin().catch(err => console.error("Auto-init error:", err));
+
 const PORT = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
     console.log(`Server running on port ${PORT}`);
+
+    // Check if database is seeded
+    try {
+      const userCount = await prisma.user.count();
+      console.log(`✅ Database connected. Total users: ${userCount}`);
+    } catch (error) {
+      console.error("❌ Database connection error:", error.message);
+    }
   });
 }
 
