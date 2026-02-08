@@ -69,6 +69,29 @@ export const createEquipmentDelivery = async (req, res) => {
       });
     }
 
+    // Check stock availability
+    const receptions = await prisma.equipmentReception.findMany({
+      where: { equipmentName },
+    });
+    const deliveries = await prisma.equipmentDelivery.findMany({
+      where: { equipmentName },
+    });
+
+    const totalReceived = receptions.reduce((sum, rec) => sum + rec.quantity, 0);
+    const totalDelivered = deliveries.reduce(
+      (sum, del) => sum + del.quantity,
+      0,
+    );
+    const currentStock = totalReceived - totalDelivered;
+
+    if (currentStock < parseInt(quantity)) {
+      return res.status(400).json({
+        message: `Insufficient stock for ${equipmentName}`,
+        requested: parseInt(quantity),
+        available: currentStock,
+      });
+    }
+
     const delivery = await prisma.equipmentDelivery.create({
       data: {
         equipmentName,
@@ -112,27 +135,18 @@ export const getAllEquipmentDeliveries = async (req, res) => {
   try {
     const deliveries = await prisma.equipmentDelivery.findMany({
       orderBy: { createdAt: "desc" },
-    });
-
-    // اضافة معلومات المسلم (deliveredBy user)
-    const deliveriesWithUsers = await Promise.all(
-      deliveries.map(async (delivery) => {
-        const user = await prisma.user.findUnique({
-          where: { id: delivery.deliveredBy },
+      include: {
+        deliverer: {
           select: { id: true, name: true, email: true, role: true },
-        });
-        return {
-          ...delivery,
-          deliveredByUser: user,
-        };
-      })
-    );
+        },
+      },
+    });
 
     console.log(`✅ Retrieved ${deliveries.length} delivery records`);
 
     return res.status(200).json({
       message: "Equipment deliveries retrieved successfully",
-      data: deliveriesWithUsers,
+      data: deliveries,
       count: deliveries.length,
     });
   } catch (error) {
@@ -150,17 +164,16 @@ export const getEquipmentDeliveryById = async (req, res) => {
 
     const delivery = await prisma.equipmentDelivery.findUnique({
       where: { id: parseInt(id) },
+      include: {
+        deliverer: {
+          select: { id: true, name: true, email: true, role: true },
+        },
+      },
     });
 
     if (!delivery) {
       return res.status(404).json({ message: "Equipment delivery not found" });
     }
-
-    // جلب معلومات المستخدم الذي سلم
-    const user = await prisma.user.findUnique({
-      where: { id: delivery.deliveredBy },
-      select: { id: true, name: true, email: true, role: true },
-    });
 
     console.log(`✅ Retrieved delivery:`, {
       id: delivery.id,
@@ -169,10 +182,7 @@ export const getEquipmentDeliveryById = async (req, res) => {
 
     return res.status(200).json({
       message: "Equipment delivery retrieved successfully",
-      data: {
-        ...delivery,
-        deliveredByUser: user,
-      },
+      data: delivery,
     });
   } catch (error) {
     console.error("Get delivery error:", error);

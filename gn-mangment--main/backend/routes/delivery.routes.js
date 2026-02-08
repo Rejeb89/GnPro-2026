@@ -8,8 +8,8 @@ import {
   getDeliveriesByUnit,
   getDeliveriesByDateRange,
 } from "../controllers/delivery.controller.js";
-import { authMiddleware } from "../middelware/auth.middleware.js";
-import { roleMiddleware } from "../middelware/role.middleware.js";
+import { authMiddleware } from "../middleware/auth.middleware.js";
+import { roleMiddleware } from "../middleware/role.middleware.js";
 
 const router = express.Router();
 
