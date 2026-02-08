@@ -6,6 +6,11 @@ import authRoutes from "./routes/auth.routes.js";
 import equipmentRoutes from "./routes/equipment.routes.js";
 import deliveryRoutes from "./routes/delivery.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
+import creditRoutes from "./routes/credit.routes.js";
+import realEstateRoutes from "./routes/realestate.routes.js";
+import vehicleRoutes from "./routes/vehicle.routes.js";
+import fuelRoutes from "./routes/fuel.routes.js";
+import settingsRoutes from "./routes/settings.routes.js";
 
 dotenv.config();
 
@@ -32,6 +37,11 @@ app.use("/api/auth", authRoutes);
 app.use("/api/equipment", equipmentRoutes);
 app.use("/api/delivery", deliveryRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/credits", creditRoutes);
+app.use("/api/realestate", realEstateRoutes);
+app.use("/api/vehicles", vehicleRoutes);
+app.use("/api/fuel", fuelRoutes);
+app.use("/api/settings", settingsRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -7,6 +7,10 @@ export const getDashboardStats = async (req, res) => {
     const totalUsers = await prisma.user.count();
     const totalReceptions = await prisma.equipmentReception.count();
     const totalDeliveries = await prisma.equipmentDelivery.count();
+    const totalVehicles = await prisma.administrativeVehicle.count();
+    const totalRealEstate = await prisma.realEstateStatus.count();
+    const totalCredits = await prisma.financialCredit.findMany();
+    const totalAvailableCredit = totalCredits.reduce((sum, c) => sum + c.remainingAmount, 0);
 
     // Get all items to calculate stock stats
     const receptions = await prisma.equipmentReception.findMany();
@@ -50,6 +54,9 @@ export const getDashboardStats = async (req, res) => {
           deliveries: totalDeliveries,
           equipmentTypes: totalEquipmentTypes,
           lowStockItems: lowStockCount,
+          vehicles: totalVehicles,
+          realEstate: totalRealEstate,
+          totalAvailableCredit,
         },
         recentReceptions,
         recentDeliveries,

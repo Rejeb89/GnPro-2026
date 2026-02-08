@@ -22,8 +22,13 @@ model User {
   password  String
   name      String
   role      Role      @default(USER)
-  receptions EquipmentReception[]
-  deliveries EquipmentDelivery[]
+  receptions     EquipmentReception[]
+  deliveries     EquipmentDelivery[]
+  credits        FinancialCredit[]    @relation("CreditCreator")
+  realEstates    RealEstateStatus[]   @relation("RealEstateCreator")
+  vehicles       AdministrativeVehicle[] @relation("VehicleCreator")
+  maintenance    MaintenanceRecord[]  @relation("MaintenanceCreator")
+  fuelRecords    FuelRecord[]         @relation("FuelCreator")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -55,6 +60,19 @@ model EquipmentReception {
   updatedAt       DateTime  @updatedAt
 }
 
+model FinancialCredit {
+  id              Int       @id @default(autoincrement())
+  description     String
+  totalAmount     Float
+  spentAmount     Float     @default(0)
+  remainingAmount Float
+  year            Int
+  createdBy       Int
+  creator         User      @relation("CreditCreator", fields: [createdBy], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
 model EquipmentDelivery {
   id                Int       @id @default(autoincrement())
   equipmentName     String
@@ -73,4 +91,66 @@ model EquipmentDelivery {
   notes             String?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
+}
+
+model RealEstateStatus {
+  id              Int       @id @default(autoincrement())
+  unitName        String
+  location        String
+  status          String    // e.g., Owned, Rented, Under Construction
+  area            Float?
+  legalStatus     String?   // الوضعية القانونية
+  notes           String?
+  createdBy       Int
+  creator         User      @relation("RealEstateCreator", fields: [createdBy], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model AdministrativeVehicle {
+  id              Int       @id @default(autoincrement())
+  plateNumber     String    @unique
+  vehicleType     String    // e.g., Car, Truck, Motorcycle
+  brand           String
+  model           String
+  assignedUnit    String
+  status          String    // e.g., Operational, Under Repair, Out of Service
+  createdBy       Int
+  creator         User      @relation("VehicleCreator", fields: [createdBy], references: [id])
+  maintenance     MaintenanceRecord[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model MaintenanceRecord {
+  id              Int       @id @default(autoincrement())
+  vehicleId       Int
+  vehicle         AdministrativeVehicle @relation(fields: [vehicleId], references: [id])
+  maintenanceDate DateTime
+  description     String
+  cost            Float
+  garage          String?
+  createdBy       Int
+  creator         User      @relation("MaintenanceCreator", fields: [createdBy], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model FuelRecord {
+  id              Int       @id @default(autoincrement())
+  unit            String
+  amount          Float
+  fuelType        String    // e.g., Diesel, Gasoline
+  couponNumbers   String?
+  date            DateTime
+  createdBy       Int
+  creator         User      @relation("FuelCreator", fields: [createdBy], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model SystemSettings {
+  id              Int       @id @default(1)
+  regionName      String    @default("Metlaoui")
+  updatedAt       DateTime  @updatedAt
 }

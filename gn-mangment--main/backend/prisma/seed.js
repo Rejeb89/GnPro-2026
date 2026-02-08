@@ -78,6 +78,74 @@ async function main() {
     });
   }
 
+  // Seed Financial Credits
+  await prisma.financialCredit.create({
+    data: {
+      description: "Annual Equipment Budget",
+      totalAmount: 100000,
+      remainingAmount: 95000,
+      spentAmount: 5000,
+      year: 2024,
+      createdBy: admin.id,
+    }
+  });
+
+  // Seed Real Estate
+  await prisma.realEstateStatus.create({
+    data: {
+      unitName: "Metlaoui Regional HQ",
+      location: "Metlaoui Center",
+      status: "Owned",
+      area: 2500,
+      legalStatus: "Registered",
+      createdBy: admin.id,
+    }
+  });
+
+  // Seed Vehicles
+  const vehicle = await prisma.administrativeVehicle.create({
+    data: {
+      plateNumber: "123 TUN 456",
+      vehicleType: "4x4",
+      brand: "Toyota",
+      model: "Land Cruiser",
+      assignedUnit: "Intervention Unit",
+      status: "Operational",
+      createdBy: manager.id,
+    }
+  });
+
+  // Seed Maintenance
+  await prisma.maintenanceRecord.create({
+    data: {
+      vehicleId: vehicle.id,
+      maintenanceDate: new Date(),
+      description: "Oil change and brake check",
+      cost: 450.5,
+      garage: "Central Workshop",
+      createdBy: manager.id,
+    }
+  });
+
+  // Seed Fuel
+  await prisma.fuelRecord.create({
+    data: {
+      unit: "Intervention Unit",
+      amount: 200,
+      fuelType: "Diesel",
+      couponNumbers: "C-9001 to C-9020",
+      date: new Date(),
+      createdBy: manager.id,
+    }
+  });
+
+  // Seed Settings
+  await prisma.systemSettings.upsert({
+    where: { id: 1 },
+    update: { regionName: "منطقة الحرس الوطني بالمتلوي" },
+    create: { id: 1, regionName: "منطقة الحرس الوطني بالمتلوي" },
+  });
+
   console.log("Database seeded successfully");
 }
 
