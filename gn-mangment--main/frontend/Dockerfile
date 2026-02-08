@@ -13,15 +13,8 @@ RUN npm install
 # Copy application files
 COPY . .
 
-# Generate Prisma Client
-RUN npx prisma generate
-
-# Expose port
-EXPOSE 5000
-
-# Set environment to development
-ENV NODE_ENV=development
-ENV PORT=5000
+# Expose port (Vite default is 5173)
+EXPOSE 5173
 
 # Start the application
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev", "--", "--host"]
