@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Lock, Mail, Loader2 } from 'lucide-react';
+import { Lock, Mail, Loader2, Zap } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -20,6 +20,19 @@ const Login = () => {
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || 'فشل تسجيل الدخول. يرجى التثبت من البيانات.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickAccess = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      await login('rejebmohamed@gn.com', 'rejebmohamed1989');
+      navigate('/');
+    } catch (err) {
+      setError('فشل الدخول السريع. يرجى التأكد من تهيئة قاعدة البيانات.');
     } finally {
       setLoading(false);
     }
@@ -80,6 +93,22 @@ const Login = () => {
             className="w-full bg-primary hover:bg-primary-light text-white font-bold py-3 rounded-md transition duration-200 flex items-center justify-center space-x-2 rtl:space-x-reverse"
           >
             {loading ? <Loader2 className="animate-spin" size={20} /> : 'تسجيل الدخول'}
+          </button>
+
+          <div className="relative flex items-center py-2">
+            <div className="flex-grow border-t border-gray-200"></div>
+            <span className="flex-shrink mx-4 text-gray-400 text-xs">أو</span>
+            <div className="flex-grow border-t border-gray-200"></div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleQuickAccess}
+            disabled={loading}
+            className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold py-3 rounded-md transition duration-200 flex items-center justify-center gap-2"
+          >
+            <Zap size={18} />
+            دخول سريع (بدون بيانات)
           </button>
         </form>
       </div>
