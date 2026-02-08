@@ -7,6 +7,10 @@ export const getDashboardStats = async (req, res) => {
     const totalUsers = await prisma.user.count();
     const totalReceptions = await prisma.equipmentReception.count();
     const totalDeliveries = await prisma.equipmentDelivery.count();
+    const totalVehicles = await prisma.administrativeVehicle.count();
+    const totalRealEstate = await prisma.realEstateStatus.count();
+    const totalCredits = await prisma.financialCredit.findMany();
+    const totalAvailableCredit = totalCredits.reduce((sum, c) => sum + c.remainingAmount, 0);
 
     // Get all items to calculate stock stats
     const receptions = await prisma.equipmentReception.findMany();
@@ -42,7 +46,7 @@ export const getDashboardStats = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Dashboard statistics retrieved successfully",
+      message: "تم استرداد إحصائيات لوحة التحكم بنجاح",
       data: {
         counts: {
           users: totalUsers,
@@ -50,6 +54,9 @@ export const getDashboardStats = async (req, res) => {
           deliveries: totalDeliveries,
           equipmentTypes: totalEquipmentTypes,
           lowStockItems: lowStockCount,
+          vehicles: totalVehicles,
+          realEstate: totalRealEstate,
+          totalAvailableCredit,
         },
         recentReceptions,
         recentDeliveries,
@@ -57,6 +64,6 @@ export const getDashboardStats = async (req, res) => {
     });
   } catch (error) {
     console.error("Dashboard stats error:", error);
-    return res.status(500).json({ message: "Failed to retrieve dashboard statistics" });
+    return res.status(500).json({ message: "فشل في استرداد إحصائيات لوحة التحكم" });
   }
 };

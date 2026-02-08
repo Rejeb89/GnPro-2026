@@ -15,7 +15,7 @@ async function main() {
     create: {
       email: "admin@example.com",
       password: adminPassword,
-      name: "Admin User",
+      name: "المسؤول العام",
       role: "ADMIN",
     },
   });
@@ -28,7 +28,7 @@ async function main() {
     create: {
       email: "manager@example.com",
       password: managerPassword,
-      name: "Warehouse Manager",
+      name: "مدير المستودع",
       role: "MANAGER",
     },
   });
@@ -41,7 +41,7 @@ async function main() {
     create: {
       email: "user@example.com",
       password: userPassword,
-      name: "Regular User",
+      name: "مستخدم عادي",
       role: "USER",
     },
   });
@@ -49,22 +49,22 @@ async function main() {
   // Seed some equipment receptions
   const equipment = [
     {
-      equipmentName: "Laptop Dell XPS",
-      category: "IT",
+      equipmentName: "حاسوب محمول Dell XPS",
+      category: "تكنولوجيا المعلومات",
       quantity: 10,
       minimumThreshold: 3,
-      sendingDept: "Procurement",
+      sendingDept: "قسم المشتريات",
       receptionDate: new Date(),
       referenceNumber: "REC-001",
       referenceDate: new Date(),
       createdBy: admin.id,
     },
     {
-      equipmentName: "Office Chair",
-      category: "Furniture",
+      equipmentName: "كرسي مكتب",
+      category: "أثاث",
       quantity: 50,
       minimumThreshold: 10,
-      sendingDept: "Logistics",
+      sendingDept: "قسم اللوجستيك",
       receptionDate: new Date(),
       referenceNumber: "REC-002",
       referenceDate: new Date(),
@@ -77,6 +77,74 @@ async function main() {
       data: item,
     });
   }
+
+  // Seed Financial Credits
+  await prisma.financialCredit.create({
+    data: {
+      description: "ميزانية التجهيزات السنوية",
+      totalAmount: 100000,
+      remainingAmount: 95000,
+      spentAmount: 5000,
+      year: 2024,
+      createdBy: admin.id,
+    }
+  });
+
+  // Seed Real Estate
+  await prisma.realEstateStatus.create({
+    data: {
+      unitName: "المقر الجهوي بالمتلوي",
+      location: "وسط مدينة المتلوي",
+      status: "ملك",
+      area: 2500,
+      legalStatus: "مسجل",
+      createdBy: admin.id,
+    }
+  });
+
+  // Seed Vehicles
+  const vehicle = await prisma.administrativeVehicle.create({
+    data: {
+      plateNumber: "123 تونس 456",
+      vehicleType: "4x4",
+      brand: "تويوتا",
+      model: "لاند كروزر",
+      assignedUnit: "وحدة التدخل",
+      status: "وظيفية",
+      createdBy: manager.id,
+    }
+  });
+
+  // Seed Maintenance
+  await prisma.maintenanceRecord.create({
+    data: {
+      vehicleId: vehicle.id,
+      maintenanceDate: new Date(),
+      description: "تغيير زيت وفحص الفرامل",
+      cost: 450.5,
+      garage: "الورشة المركزية",
+      createdBy: manager.id,
+    }
+  });
+
+  // Seed Fuel
+  await prisma.fuelRecord.create({
+    data: {
+      unit: "وحدة التدخل",
+      amount: 200,
+      fuelType: "ديزل",
+      couponNumbers: "C-9001 إلى C-9020",
+      date: new Date(),
+      createdBy: manager.id,
+    }
+  });
+
+  // Seed Settings
+  await prisma.systemSettings.upsert({
+    where: { id: 1 },
+    update: { regionName: "منطقة الحرس الوطني بالمتلوي" },
+    create: { id: 1, regionName: "منطقة الحرس الوطني بالمتلوي" },
+  });
 
   console.log("Database seeded successfully");
 }
