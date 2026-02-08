@@ -9,6 +9,15 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const login = async (email, password) => {
+    const res = await axios.post(`${API_URL}/auth/login`, { email, password });
+    const { accessToken, user } = res.data;
+    localStorage.setItem('token', accessToken);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+    setUser(user);
+    return user;
+  };
+
   useEffect(() => {
     const checkLoggedIn = async () => {
       try {
@@ -17,6 +26,9 @@ export const AuthProvider = ({ children }) => {
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           const res = await axios.get(`${API_URL}/auth/me`);
           setUser(res.data.user);
+        } else {
+          // Auto-login with default admin account if no token found
+          await login('rejebmohamed@gn.com', 'rejebmohamed1989');
         }
       } catch (err) {
         localStorage.removeItem('token');
@@ -27,15 +39,6 @@ export const AuthProvider = ({ children }) => {
     };
     checkLoggedIn();
   }, []);
-
-  const login = async (email, password) => {
-    const res = await axios.post(`${API_URL}/auth/login`, { email, password });
-    const { accessToken, user } = res.data;
-    localStorage.setItem('token', accessToken);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-    setUser(user);
-    return user;
-  };
 
   const logout = async () => {
     try {
