@@ -7,6 +7,7 @@ import {
   Car,
   Fuel,
   Settings,
+  Users,
   LogOut,
   ChevronLeft,
   DollarSign
@@ -37,6 +38,7 @@ const Sidebar = () => {
     { to: '/vehicles', icon: Car, label: 'الوسائل والصيانة' },
     { to: '/fuel', icon: Fuel, label: 'قسم المحروقات' },
     { to: '/settings', icon: Settings, label: 'الإعدادات' },
+    ...(user?.role === 'ADMIN' ? [{ to: '/users', icon: Users, label: 'المستخدمين' }] : []),
   ];
 
   return (

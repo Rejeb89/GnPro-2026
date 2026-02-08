@@ -11,6 +11,7 @@ import RealEstate from './pages/RealEstate';
 import Vehicles from './pages/Vehicles';
 import Fuel from './pages/Fuel';
 import Settings from './pages/Settings';
+import Users from './pages/Users';
 import ComingSoon from './components/ComingSoon';
 
 function App() {
@@ -72,6 +73,14 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Settings />
+              </Layout>
+            </ProtectedRoute>
+          } />
+
+          <Route path="/users" element={
+            <ProtectedRoute>
+              <Layout>
+                <Users />
               </Layout>
             </ProtectedRoute>
           } />
