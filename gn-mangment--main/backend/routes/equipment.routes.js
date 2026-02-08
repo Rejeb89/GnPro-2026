@@ -7,9 +7,10 @@ import {
   deleteEquipmentReception,
   getEquipmentByCategory,
   getLowStockEquipment,
+  getEquipmentStockSummary,
 } from "../controllers/equipment.controller.js";
-import { authMiddleware } from "../middelware/auth.middleware.js";
-import { roleMiddleware } from "../middelware/role.middleware.js";
+import { authMiddleware } from "../middleware/auth.middleware.js";
+import { roleMiddleware } from "../middleware/role.middleware.js";
 
 const router = express.Router();
 
@@ -31,6 +32,9 @@ router.get("/category/:category", getEquipmentByCategory);
 
 // Get low stock equipment
 router.get("/status/low-stock", getLowStockEquipment);
+
+// Get equipment stock summary
+router.get("/status/stock-summary", getEquipmentStockSummary);
 
 // Get equipment by ID
 router.get("/:id", getEquipmentReceptionById);

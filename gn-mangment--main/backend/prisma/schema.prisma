@@ -22,6 +22,8 @@ model User {
   password  String
   name      String
   role      Role      @default(USER)
+  receptions EquipmentReception[]
+  deliveries EquipmentDelivery[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -48,6 +50,7 @@ model EquipmentReception {
   referenceDate   DateTime
   notes           String?
   createdBy       Int
+  creator         User      @relation(fields: [createdBy], references: [id])
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }
@@ -61,6 +64,7 @@ model EquipmentDelivery {
   beneficiary       String
   receiver          String
   deliveredBy       Int
+  deliverer         User      @relation(fields: [deliveredBy], references: [id])
   deliveryDate      DateTime
   referenceNumber   String
   referenceDate     DateTime

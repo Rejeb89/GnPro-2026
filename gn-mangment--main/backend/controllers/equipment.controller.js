@@ -74,6 +74,11 @@ export const getAllEquipmentReceptions = async (req, res) => {
   try {
     const equipments = await prisma.equipmentReception.findMany({
       orderBy: { createdAt: "desc" },
+      include: {
+        creator: {
+          select: { id: true, name: true, email: true, role: true },
+        },
+      },
     });
 
     console.log(`✅ Retrieved ${equipments.length} equipment records`);
@@ -98,6 +103,11 @@ export const getEquipmentReceptionById = async (req, res) => {
 
     const equipment = await prisma.equipmentReception.findUnique({
       where: { id: parseInt(id) },
+      include: {
+        creator: {
+          select: { id: true, name: true, email: true, role: true },
+        },
+      },
     });
 
     if (!equipment) {
@@ -242,24 +252,85 @@ export const getEquipmentByCategory = async (req, res) => {
 // Get Low Stock Equipment (quantity below minimum threshold)
 export const getLowStockEquipment = async (req, res) => {
   try {
-    const equipments = await prisma.equipmentReception.findMany({
-      where: {
-        quantity: {
-          lt: prisma.raw("minimumThreshold"), // Use Prisma raw for dynamic comparison
-        },
-      },
+    // Prisma currently doesn't support direct column comparison in where clause
+    // We can use $queryRaw or filter in JS. For simplicity and keeping Prisma types, we use filter here.
+    const allEquipments = await prisma.equipmentReception.findMany({
       orderBy: { createdAt: "desc" },
     });
 
+    const lowStockEquipments = allEquipments.filter(
+      (item) => item.quantity < item.minimumThreshold,
+    );
+
     return res.status(200).json({
       message: "Low stock equipment retrieved",
-      data: equipments,
-      count: equipments.length,
+      data: lowStockEquipments,
+      count: lowStockEquipments.length,
     });
   } catch (error) {
     console.error("Get low stock error:", error);
     return res
       .status(500)
       .json({ message: "Failed to retrieve low stock equipment" });
+  }
+};
+
+// Get Equipment Stock Summary (Aggregated by name)
+export const getEquipmentStockSummary = async (req, res) => {
+  try {
+    // Get all receptions
+    const receptions = await prisma.equipmentReception.findMany();
+    // Get all deliveries
+    const deliveries = await prisma.equipmentDelivery.findMany();
+
+    // Calculate stock for each equipment name
+    const stockMap = {};
+
+    receptions.forEach((rec) => {
+      if (!stockMap[rec.equipmentName]) {
+        stockMap[rec.equipmentName] = {
+          name: rec.equipmentName,
+          category: rec.category,
+          received: 0,
+          delivered: 0,
+          stock: 0,
+          minimumThreshold: rec.minimumThreshold, // Taking threshold from the latest reception for now
+        };
+      }
+      stockMap[rec.equipmentName].received += rec.quantity;
+      stockMap[rec.equipmentName].stock += rec.quantity;
+      // Update threshold to the latest reception's threshold
+      stockMap[rec.equipmentName].minimumThreshold = rec.minimumThreshold;
+    });
+
+    deliveries.forEach((del) => {
+      if (stockMap[del.equipmentName]) {
+        stockMap[del.equipmentName].delivered += del.quantity;
+        stockMap[del.equipmentName].stock -= del.quantity;
+      } else {
+        // This shouldn't normally happen if data is consistent
+        stockMap[del.equipmentName] = {
+          name: del.equipmentName,
+          category: del.category,
+          received: 0,
+          delivered: del.quantity,
+          stock: -del.quantity,
+          minimumThreshold: 0,
+        };
+      }
+    });
+
+    const summary = Object.values(stockMap);
+
+    return res.status(200).json({
+      message: "Equipment stock summary retrieved successfully",
+      data: summary,
+      count: summary.length,
+    });
+  } catch (error) {
+    console.error("Get stock summary error:", error);
+    return res
+      .status(500)
+      .json({ message: "Failed to retrieve equipment stock summary" });
   }
 };
